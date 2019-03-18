@@ -2,6 +2,7 @@ package com.example.gerard.socialapp.view;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
     public ImageView image;
     public ImageView like;
     public TextView numLikes;
+    public ImageView delete;
     public LinearLayout likeLayout;
 
     public PostViewHolder(View itemView) {
@@ -26,6 +28,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         image = itemView.findViewById(R.id.image);
         like = itemView.findViewById(R.id.like);
         numLikes = itemView.findViewById(R.id.num_likes);
+        delete = itemView.findViewById(R.id.delete);
         likeLayout = itemView.findViewById(R.id.like_layout);
     }
 }

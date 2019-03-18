@@ -6,10 +6,13 @@ import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -54,6 +57,7 @@ public class NewPostActivity extends AppCompatActivity {
     Button mImageButton;
     Button mVideoButton;
     Button mAudioButton;
+//    Button mDeleteButton;
 
     Uri mFileUri;
 
@@ -85,6 +89,8 @@ public class NewPostActivity extends AppCompatActivity {
         mCameraImageButton = findViewById(R.id.btnCameraImage);
         mCameraVideoButton = findViewById(R.id.btnCameraVideo);
         mMicButton = findViewById(R.id.btnMic);
+
+//        mDeleteButton = findViewById(R.id.delete);
 
         mPublishButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,6 +146,13 @@ public class NewPostActivity extends AppCompatActivity {
                 startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI), RC_AUDIO_PICK);
             }
         });
+
+//
+        if (savedInstanceState != null) {
+            mediaUri = savedInstanceState.getParcelable("mediauri");
+            imagePreview.setImageURI(mediaUri);
+        }
+//
     }
 
     @Override
@@ -243,7 +256,7 @@ public class NewPostActivity extends AppCompatActivity {
 
 
     private void dispatchTakePictureIntent() {
-
+        Bundle sFileUri = null;
         Uri fileUri = null;
         try {
             fileUri = MediaFiles.createFile(this, MediaFiles.Type.IMAGE).uri;
@@ -251,17 +264,39 @@ public class NewPostActivity extends AppCompatActivity {
             // No se pudo crear el fichero
         }
 
-        if (fileUri != null) {
-            mFileUri = fileUri;
+//            mFileUri = fileUri;  // me tengo que guardar el fichero que le he enviado a la camara, porque la camara cuando se cierra no me lo devuelve
 
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-            startActivityForResult(intent, RC_IMAGE_TAKE);
+
+//            if (fileUri != null) {
+//                mFileUri = fileUri;
+//
+//                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+//                startActivityForResult(intent, RC_IMAGE_TAKE);
+//            }
+
+//            if (((fileUri != null) && sFileUri.getParcelable("mediauri") != null)) {
+//                mFileUri = sFileUri.getParcelable("mediauri");
+//
+//            }
+
+        if (fileUri != null) {
+                mFileUri = fileUri;
+
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                startActivityForResult(intent, RC_IMAGE_TAKE);
+
+
+        } else if (sFileUri.getParcelable("mediauri") != null) {
+            mFileUri = sFileUri.getParcelable("mediauri");
         }
+
     }
 
-    private void dispatchTakeVideoIntent() {
 
+    private void dispatchTakeVideoIntent() {
+        Bundle sFileUri = null;
         Uri fileUri = null;
         try {
             fileUri = MediaFiles.createFile(this, MediaFiles.Type.VIDEO).uri;
@@ -311,5 +346,29 @@ public class NewPostActivity extends AppCompatActivity {
             mRecorder.release();
             mRecorder = null;
         }
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (mediaUri != null) {
+            outState.putParcelable("mediauri", mediaUri);
+        }
+
+        // outState metes el valor del mediauri
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if (mediaUri != null) {
+            mediaUri = savedInstanceState.getParcelable("mediauri");
+        }
+
+        // restauro ese mediaUri en el imageview
+
     }
 }

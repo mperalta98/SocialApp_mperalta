@@ -87,6 +87,13 @@ public class PostsFragment extends Fragment {
                     viewHolder.image.setVisibility(View.GONE);
                 }
 
+
+                viewHolder.delete.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            mReference.child("posts/data").child((postKey)).setValue(null);
+                        }
+                });
+
                 viewHolder.numLikes.setText(String.valueOf(post.likes.size()));
 
                 viewHolder.likeLayout.setOnClickListener(new View.OnClickListener() {

@@ -14,6 +14,7 @@ public class Post {
     public String mediaType;
     public Map<String, Boolean> likes = new HashMap<>();
 
+
     public Post() {}
 
     public Post(String uid, String author, String authorPhotoUrl, String content, String mediaUrl, String mediaType) {
@@ -23,6 +24,7 @@ public class Post {
         this.content = content;
         this.mediaUrl = mediaUrl;
         this.mediaType = mediaType;
+
     }
 
     @Exclude
@@ -35,6 +37,7 @@ public class Post {
         result.put("mediaUrl", mediaUrl);
         result.put("mediaType", mediaType);
         result.put("likes", likes);
+
 
         return result;
     }
